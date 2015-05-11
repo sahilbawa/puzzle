@@ -43,7 +43,7 @@ public class Block {
 		int yIndex = this.yposition;
 		
 		//---CHECK DOWN---
-		if(yIndex != 3) {
+		if(this.height + yIndex < 4) {
 			if((type == 'A' && blockArray[map[yIndex+1][xIndex]-1].type == 'E' && blockArray[map[yIndex+1][xIndex+1]-1].type == 'E') ||
 					(type == 'B' && blockArray[map[yIndex+2][xIndex]-1].type == 'E') ||
 					(type == 'C' && blockArray[map[yIndex+2][xIndex]-1].type == 'E' && blockArray[map[yIndex+2][xIndex+1]-1].type == 'E') ||
@@ -61,7 +61,7 @@ public class Block {
 		}
 		
 		//---CHECK RIGHT---
-		if(xIndex != 4) {
+		if(this.width + xIndex < 5) {
 			if((type == 'A' && blockArray[map[yIndex][xIndex+2]-1].type == 'E') ||
 					(type == 'B' && blockArray[map[yIndex][xIndex+1]-1].type == 'E' && blockArray[map[yIndex+1][xIndex+1]-1].type == 'E') ||
 					(type == 'C' && blockArray[map[yIndex][xIndex+2]-1].type == 'E' && blockArray[map[yIndex+1][xIndex+2]-1].type == 'E') ||
