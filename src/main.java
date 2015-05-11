@@ -38,19 +38,6 @@ public class main {
 				yIndex++;
 			}
 			
-			/*
-			//Print out individual steps in creating map
-			for(int w = 0; w<4; w++)
-			{
-			    for(int j = 0; j<5; j++)
-			    {
-			        System.out.print(map[w][j]);
-			    }
-			    System.out.println();
-			}
-		    System.out.println("--------");
-		    */
-			
 		    
 		}
 		
@@ -65,6 +52,10 @@ public class main {
 			blockArray[j].getMovements(blockArray, map);
 		}
 		System.out.println();
+		
+		
+		//--TO TEST OUT FUNCTION--//
+		
 		System.out.println("Moving block A down to test translateMap function...");
 		int tmpblock1 = map[0][0];
 		int tmpblock2 = map[0][1];
@@ -72,10 +63,13 @@ public class main {
 		map[0][1] = map[1][1];
 		map[1][0] = tmpblock1;
 		map[1][1] = tmpblock2;
-		
 		System.out.println();
 		printMap(map, blockArray);
 		System.out.println();
+		
+		//--END TESTING--//
+		
+		
 		System.out.println("final sequence: " + translateMap(map, blockArray));
 	}
 	
@@ -122,70 +116,5 @@ public class main {
 		String output = new String(seqArray);
 		return output;
 	}
-	
-	/*
-	
-	// Turn Matrix into sequence of letters which is the configuration
-		public static String MatrixToSequence(char puzzleArray[][], int typeArray[][]) {
-			int xIndex = 0, yIndex = 0;
-			int type;
-			int index = 0;
-			int charIndex = 0;
-			boolean bigCubeRead = false;
-			boolean verticalCubeRead = false;
-			char[] seqArray = new char[12];
-			for(int i = 0; i < 12; i++) {
-				type = typeArray[index][2];
-				if (xIndex == 4) {
-					xIndex = 0;
-					yIndex++;
-				}
-				if (type == 0) {
-					seqArray[charIndex] = 'E';
-					charIndex++;
-					xIndex++;
-				}
-				//if (puzzleArray[yIndex][xIndex] == 1) {
-					if (type == 1) {
-						seqArray[charIndex] = 'A';
-						charIndex++;
-						xIndex =+ 2;
-					}
-					
-					if (type == 2 && verticalCubeRead == false) {
-						seqArray[charIndex] = 'B';
-						charIndex++;
-						xIndex++;
-					} else if (type == 2 && verticalCubeRead == true) {
-						xIndex++;
-					}
-					
-					if (type == 3 && bigCubeRead == false) {
-						seqArray[charIndex] = 'C';
-						bigCubeRead = true;
-						charIndex++;
-						xIndex =+ 2;
-					} else if (type == 3 && bigCubeRead == true) {
-						xIndex =+2;
-					}
-					
-					
-					if (type == 4) {
-						seqArray[charIndex] = 'D';
-						charIndex++;
-						xIndex++;
-					}
-					
-					index++;
-				//}
-				
-			}
-			String output = new String(seqArray);
-			return output;
-				
-				
-	}
-
-	*/
 
 }
