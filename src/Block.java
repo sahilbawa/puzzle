@@ -38,7 +38,9 @@ public class Block {
 		}
 	}
 	
-	public void getMovements(Block[] blockArray, int[][] map) {
+	public String getMovements(Block[] blockArray, int[][] map) {
+		char[] moveID = new char[4];
+		String output;
 		int xIndex = this.xposition;
 		int yIndex = this.yposition;
 		
@@ -77,7 +79,27 @@ public class Block {
 					(type == 'D' && blockArray[map[yIndex][xIndex-1]-1].type == 'E'))
 				this.moveLeft = true;
 		}
-
+		if(moveDown || moveUp || moveLeft || moveRight) {
+			int tmpx = xIndex+48;
+			int tmpy = yIndex+48;
+			moveID[0] = this.type;
+			moveID[1] = (char)tmpy;
+			moveID[2] = (char)tmpx;
+			if(this.moveDown)
+				moveID[3] = 'd';
+			if(this.moveUp)
+				moveID[3] = 'u';
+			if(this.moveLeft)
+				moveID[3] = 'l';
+			if(this.moveRight)
+				moveID[3] = 'r';
+			output = new String(moveID);
+		} else
+			output = null;
+		
+		return output;
+		
+		/*
 		if(this.moveDown)
 			System.out.println("Block " + this.type + " at (" + xIndex + ", " + yIndex + ") can move down.");
 
@@ -89,7 +111,7 @@ public class Block {
 
 		if(this.moveRight)
 			System.out.println("Block " + this.type + " at (" + xIndex + ", " + yIndex + ") can move right.");
-		
+		*/
 	}
 	
 }
