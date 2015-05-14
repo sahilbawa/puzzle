@@ -1,14 +1,26 @@
-import java.util.Arrays;
+import java.util.*;
 
 
 public class main {
 
 	public static void main(String[] args) {
+		Hashtable<String, String> table = new Hashtable<String, String>(500);
+		
+		//create queue of linkedlist of type string
+		Queue<LinkedList<String>> helperQueue = new LinkedList<LinkedList<String>>();
+		
 		int[][] map = new int[4][5];
 		Block[] blockArray = new Block[12];
 		int xIndex = 0;
 		int yIndex = 0;
 		String config = "AADEECBDDAAD";
+		
+		//the first linked list to be added to the queue
+		LinkedList<String> alpha = new LinkedList<String>();
+		
+		//adds starting config to the alpha list and adds alpha list to queue
+		alpha.add(config);
+		helperQueue.add(alpha);
 		
 		
 		
