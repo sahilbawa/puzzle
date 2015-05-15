@@ -4,10 +4,10 @@ import java.util.*;
 public class main {
 
 	public static void main(String[] args) {
-		String config = "AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
-		LinkedList<String> winningList;
+		String config = "AADCBDEDEAAD";//"DAADEAEBACDD";//"AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
+		LinkedList<String> winningList = null;
 		
-		Hashtable<String, String> table = new Hashtable<String, String>(5000);
+		Hashtable<String, String> table = new Hashtable<String, String>(500000);
 		
 		//create queue of linkedlist of type string
 		Queue<LinkedList<String>> helperQueue = new LinkedList<LinkedList<String>>();
@@ -65,12 +65,6 @@ public class main {
 		}
 		
 		//-----------END of ITERATION OF SEQUENCE-----------
-		
-		if(blockArray[map[1][3]].type == 'C' && blockArray[map[1][4]].type == 'C' && blockArray[map[2][3]].type == 'C' && blockArray[map[2][4]].type == 'C') {
-			winningList = helperQueue.remove();
-			System.out.println("**************************\nYAY YOU MOTHERFUCKERS!\nWE DID IT!\nSTARTED FROM THE BOTTOM\nNOW WE'RE HERE!\n**************************\n");
-			break mainLoop;
-		}
 			
 		
 		System.out.println("Starting configuration:");
@@ -87,9 +81,13 @@ public class main {
 		
 		//Iterate through each element of moveID and store appropriate data in linkedlist & hashtable
 		for(int i = 0; i < 12; i++) {
+			int listOffset = 0;
 			int xpos;
 			int ypos;
-			char direction;
+			boolean moveDown = false;
+			boolean moveUp = false;
+			boolean moveLeft = false;
+			boolean moveRight = false;
 			int tmpblockID;
 			int height;
 			int width;
@@ -103,12 +101,22 @@ public class main {
 			if(moveID[i] != null) {
 				ypos = (int)moveID[i].charAt(1) - 48;
 				xpos = (int)moveID[i].charAt(2) - 48;
-				direction = moveID[i].charAt(3);
+				
+				if(moveID[i].charAt(3) != 0)
+					moveDown = true;
+				if(moveID[i].charAt(4) != 0)
+					moveUp = true;
+				if(moveID[i].charAt(5) != 0)
+					moveLeft = true;
+				if(moveID[i].charAt(6) != 0)
+					moveRight = true;
+				
 				tmpblockID = map[ypos][xpos];
 				height = blockArray[tmpblockID-1].height;
 				width = blockArray[tmpblockID-1].width;
 				//System.out.println("" + ypos + xpos + tmpblockID + height + width + );
-				if(direction == 'd') {
+				if(moveDown) {
+					listOffset++;
 					//height used for C, to switch top layer of C-blocks with empty blocks 2 rows down
 					map[ypos][xpos] = map[ypos+height][xpos]; //replace block 1 with empty 1
 					map[ypos+height][xpos] = tmpblockID; //replace empty 1 with block 1
@@ -116,29 +124,124 @@ public class main {
 						map[ypos][xpos+1] = map[ypos+height][xpos+1]; //replace block 2 with empty 2
 						map[ypos+height][xpos+1] = tmpblockID; //replace empty 2 with block 2
 					}
-				} else if(direction == 'u') {
+					printIntMap(map,blockArray);
+					newconfig = translateMap(map, blockArray);
+					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(3);
+					
+					System.out.println("configID: " + configID);
+					
+					if(!table.contains(newconfig)) {
+						table.put(newconfig, newconfig);
+						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
+						tmplist.add(configID);
+						helperQueue.add(tmplist);
+					} else {
+						System.out.println("CONFIG ALREADY EXISTS\n");
+					}
+
+					if(checkWin(blockArray, map))
+						break mainLoop;
+					//reset map
+					for(int k = 0; k < map.length; k++)
+					    map[k] = helperMap[k].clone();
+					
+					
+					
+					
+					
+					
+				} if(moveUp) {
+					listOffset++;
 					map[ypos+height-1][xpos] = map[ypos-1][xpos]; //replace bottommost left square with empty 1
 					map[ypos-1][xpos] = tmpblockID; //replace empty 1 with block 1
 					if(width == 2) { //for A & C blocks
 						map[ypos+height-1][xpos+1] = map[ypos-1][xpos+1]; //replace bottommost right square with empty 2
 						map[ypos-1][xpos+1] = tmpblockID; //replace empty 2 with block 2
 					}
-				}else if(direction == 'l') {
+					printIntMap(map,blockArray);
+					newconfig = translateMap(map, blockArray);
+					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(4);
+					
+					System.out.println("configID: " + configID);
+					
+					if(!table.contains(newconfig)) {
+						table.put(newconfig, newconfig);
+						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
+						tmplist.add(configID);
+						helperQueue.add(tmplist);
+					} else {
+						System.out.println("CONFIG ALREADY EXISTS\n");
+					}
+					
+					if(checkWin(blockArray, map))
+						break mainLoop;
+					//reset map
+					for(int k = 0; k < map.length; k++)
+					    map[k] = helperMap[k].clone();
+					
+					
+				} if(moveLeft) {
+					listOffset++;
 					map[ypos][xpos+width-1] = map[ypos][xpos-1]; //index square replaced with empty 1
 					map[ypos][xpos-1] = tmpblockID;
 					if(height == 2) {
 						map[ypos+1][xpos+width-1] = map[ypos+1][xpos-1];
 						map[ypos+1][xpos-1] = tmpblockID;
 					}
-				}else if(direction == 'r') {
+					printIntMap(map,blockArray);
+					newconfig = translateMap(map, blockArray);
+					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(5);
+					
+					System.out.println("configID: " + configID);
+					
+					if(!table.contains(newconfig)) {
+						table.put(newconfig, newconfig);
+						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
+						tmplist.add(configID);
+						helperQueue.add(tmplist);
+					} else {
+						System.out.println("CONFIG ALREADY EXISTS\n");
+					}
+					if(checkWin(blockArray, map))
+						break mainLoop;
+					//reset map
+					for(int k = 0; k < map.length; k++)
+					    map[k] = helperMap[k].clone();
+					
+					
+				} if(moveRight) {
+					listOffset++;
 					map[ypos][xpos] = map[ypos][xpos+width]; //index square replaced with empty 1
 					map[ypos][xpos+width] = tmpblockID;
 					if(height == 2) {
 						map[ypos+1][xpos] = map[ypos+1][xpos+width];
 						map[ypos+1][xpos+width] = tmpblockID;
 					}
+					printIntMap(map,blockArray);
+					newconfig = translateMap(map, blockArray);
+					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(6);
+					
+					System.out.println("configID: " + configID);
+					
+					if(!table.contains(newconfig)) {
+						table.put(newconfig, newconfig);
+						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
+						tmplist.add(configID);
+						helperQueue.add(tmplist);
+					} else {
+						System.out.println("CONFIG ALREADY EXISTS\n");
+					}
+
+					if(checkWin(blockArray, map))
+						break mainLoop;
+					//reset map
+					for(int k = 0; k < map.length; k++)
+					    map[k] = helperMap[k].clone();
+					
+					
 				}
 				
+				/*
 				printIntMap(map,blockArray);
 				newconfig = translateMap(map, blockArray);
 				configID = newconfig + moveID[i];
@@ -153,7 +256,7 @@ public class main {
 				} else {
 					System.out.println("CONFIG ALREADY EXISTS\n");
 				}
-				
+				*/
 				
 				
 				//reset map
@@ -168,9 +271,13 @@ public class main {
 		helperQueue.remove();
 		
 		}
+		
 		//-------END OF GIANT WHILE LOOP-----------//
 		
-		
+		printQueue(helperQueue);
+		System.out.println("\n----------------------\n\n\n");
+		while(helperQueue.peek() != null)
+			winningList = helperQueue.remove();
 		printList(winningList);
 		
 		
@@ -207,7 +314,13 @@ public class main {
 	
 	
 	
-	
+	public static boolean checkWin(Block[] blockArray, int[][] map) {
+		if(blockArray[map[1][3]-1].type == 'C' && blockArray[map[1][4]-1].type == 'C' && blockArray[map[2][3]-1].type == 'C' && blockArray[map[2][4]-1].type == 'C') {
+			System.out.println("**************************\nYAY YOU MOTHERFUCKERS!\nWE DID IT!\nSTARTED FROM THE BOTTOM\nNOW WE'RE HERE!\n**************************\n");
+			return true;
+		} else
+			return false;
+	}
 	
 	
 	public static void printList(LinkedList<String> list) {
@@ -218,7 +331,7 @@ public class main {
 		String tmpConfig = list.pollFirst();
 		createMap(map, tmpConfig);
 		printCharMap(map);
-		
+		System.out.println("\nSolved in " + list.size() + " moves.\n");
 		while((tmpConfig = list.pollFirst()) != null) {
 			configID = tmpConfig.toCharArray();
 			if(configID[15] == 'd')
@@ -307,7 +420,7 @@ public class main {
 			System.out.println();
 		}
 	}
-	
+
 	public static void printCharMap(char[][] map) {
 		for(int w = 0; w<4; w++)
 		{

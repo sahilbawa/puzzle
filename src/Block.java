@@ -39,7 +39,7 @@ public class Block {
 	}
 	
 	public String getMovements(Block[] blockArray, int[][] map) {
-		char[] moveID = new char[4];
+		char[] moveID = new char[7];
 		String output;
 		int xIndex = this.xposition;
 		int yIndex = this.yposition;
@@ -88,11 +88,11 @@ public class Block {
 			if(this.moveDown)
 				moveID[3] = 'd';
 			if(this.moveUp)
-				moveID[3] = 'u';
+				moveID[4] = 'u';
 			if(this.moveLeft)
-				moveID[3] = 'l';
+				moveID[5] = 'l';
 			if(this.moveRight)
-				moveID[3] = 'r';
+				moveID[6] = 'r';
 			output = new String(moveID);
 		} else
 			output = null;
