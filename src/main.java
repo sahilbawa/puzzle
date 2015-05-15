@@ -17,7 +17,7 @@ public class main {
 		String config = "AADCBDEDEAAD";//"DAADEAEBACDD";//"AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
 		LinkedList<String> winningList = null;
 		
-		Hashtable<String, String> table = new Hashtable<String, String>(500000);
+		HashMap<String, String> table = new HashMap<String, String>(5000);
 		
 		//create queue of linkedlist of type string
 		Queue<LinkedList<String>> helperQueue = new LinkedList<LinkedList<String>>();
@@ -143,7 +143,7 @@ public class main {
 					
 					Debugger.log("configID: " + configID);
 					
-					if(!table.contains(newconfig)) {
+					if(!table.containsKey(newconfig)) {
 						table.put(newconfig, newconfig);
 						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
 						tmplist.add(configID);
@@ -177,7 +177,7 @@ public class main {
 					
 					Debugger.log("configID: " + configID);
 					
-					if(!table.contains(newconfig)) {
+					if(!table.containsKey(newconfig)) {
 						table.put(newconfig, newconfig);
 						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
 						tmplist.add(configID);
@@ -207,7 +207,7 @@ public class main {
 					
 					Debugger.log("configID: " + configID);
 					
-					if(!table.contains(newconfig)) {
+					if(!table.containsKey(newconfig)) {
 						table.put(newconfig, newconfig);
 						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
 						tmplist.add(configID);
@@ -236,7 +236,7 @@ public class main {
 					
 					Debugger.log("configID: " + configID);
 					
-					if(!table.contains(newconfig)) {
+					if(!table.containsKey(newconfig)) {
 						table.put(newconfig, newconfig);
 						LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
 						tmplist.add(configID);
@@ -254,23 +254,6 @@ public class main {
 					
 				}
 				
-				/*
-				printIntMap(map,blockArray);
-				newconfig = translateMap(map, blockArray);
-				configID = newconfig + moveID[i];
-				
-				Debugger.log("configID: " + configID);
-				
-				if(!table.contains(newconfig)) {
-					table.put(newconfig, newconfig);
-					LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
-					tmplist.add(configID);
-					helperQueue.add(tmplist);
-				} else {
-					Debugger.log("CONFIG ALREADY EXISTS\n");
-				}
-				*/
-				
 				
 				//reset map
 				for(int k = 0; k < map.length; k++)
@@ -282,8 +265,7 @@ public class main {
 		if(Debugger.enabled)
 			printQueue(helperQueue);
 		Debugger.log("\n----------------------\n\n\n");
-		System.out.println("size: " + helperQueue.remove().size());
-		
+		helperQueue.remove();
 		}
 		
 		//-------END OF GIANT WHILE LOOP-----------//
@@ -295,34 +277,6 @@ public class main {
 		
 		printList(winningList);
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		/*
-		//--TO TEST OUT FUNCTION--//
-		
-		System.out.println("Moving block A down to test translateMap function...");
-		int tmpblock1 = map[0][0];
-		int tmpblock2 = map[0][1];
-		map[0][0] = map[1][0];
-		map[0][1] = map[1][1];
-		map[1][0] = tmpblock1;
-		map[1][1] = tmpblock2;
-		System.out.println();
-		printIntMap(map, blockArray);
-		System.out.println();
-		
-		//--END TESTING--//
-		*/
-		
 	}
 	
 	
@@ -331,7 +285,6 @@ public class main {
 	
 	public static boolean checkWin(Block[] blockArray, int[][] map) {
 		if(blockArray[map[1][3]-1].type == 'C' && blockArray[map[1][4]-1].type == 'C' && blockArray[map[2][3]-1].type == 'C' && blockArray[map[2][4]-1].type == 'C') {
-			System.out.println("**************************\nYAY YOU MOTHERFUCKERS!\nWE DID IT!\nSTARTED FROM THE BOTTOM\nNOW WE'RE HERE!\n**************************\n");
 			return true;
 		} else
 			return false;
@@ -345,6 +298,7 @@ public class main {
 		
 		String tmpConfig = list.pollFirst();
 		createMap(map, tmpConfig);
+		System.out.println("Initial configuration:");
 		printCharMap(map);
 		System.out.println("\nSolved in " + list.size() + " moves.\n");
 		while((tmpConfig = list.pollFirst()) != null) {
