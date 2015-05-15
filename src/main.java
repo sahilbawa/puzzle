@@ -2,8 +2,10 @@ import java.util.*;
 
 
 public class main {
-
 	public static void main(String[] args) {
+		Debugger debugger = new Debugger();
+		Debugger.enabled = false;
+		
 		/*
 		 * AADCBDEDEAAD : 116 winning moves
 		 * EACADEABDADD : 9 winning moves
@@ -12,7 +14,7 @@ public class main {
 		 * DAADEAEBACDD : 2 winning moves
 		 * 
 		 */
-		String config = "DDEADDCDCDEA";//"DAADEAEBACDD";//"AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
+		String config = "AADCBDEDEAAD";//"DAADEAEBACDD";//"AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
 		LinkedList<String> winningList = null;
 		
 		Hashtable<String, String> table = new Hashtable<String, String>(500000);
@@ -74,39 +76,42 @@ public class main {
 		
 		//-----------END of ITERATION OF SEQUENCE-----------
 			
-		
-		System.out.println("Starting configuration:");
-		printIntMap(map, blockArray);
+
+		if(Debugger.enabled) {
+			System.out.println("Starting configuration:");
+			printIntMap(map, blockArray);
+		}
 		
 
 		for(int j = 0; j < 12; j++) {
 			moveID[j] = blockArray[j].getMovements(blockArray, map);
 		}
-		System.out.println("\nArray of Moves: " + Arrays.toString(moveID));
+		Debugger.log("\nArray of Moves: " + Arrays.toString(moveID));
 		
 		
 		
 		
 		//Iterate through each element of moveID and store appropriate data in linkedlist & hashtable
 		for(int i = 0; i < 12; i++) {
-			int listOffset = 0;
-			int xpos;
-			int ypos;
-			boolean moveDown = false;
-			boolean moveUp = false;
-			boolean moveLeft = false;
-			boolean moveRight = false;
-			int tmpblockID;
-			int height;
-			int width;
-			String newconfig;
-			String configID;
-			
-			int[][] helperMap = new int[map.length][];
-			for(int k = 0; k < map.length; k++)
-			    helperMap[k] = map[k].clone();
-			
 			if(moveID[i] != null) {
+				int listOffset = 0;
+				int xpos;
+				int ypos;
+				boolean moveDown = false;
+				boolean moveUp = false;
+				boolean moveLeft = false;
+				boolean moveRight = false;
+				int tmpblockID;
+				int height;
+				int width;
+				String newconfig;
+				String configID;
+				
+				int[][] helperMap = new int[map.length][];
+				for(int k = 0; k < map.length; k++)
+				    helperMap[k] = map[k].clone();
+				
+			
 				ypos = (int)moveID[i].charAt(1) - 48;
 				xpos = (int)moveID[i].charAt(2) - 48;
 				
@@ -122,9 +127,8 @@ public class main {
 				tmpblockID = map[ypos][xpos];
 				height = blockArray[tmpblockID-1].height;
 				width = blockArray[tmpblockID-1].width;
-				//System.out.println("" + ypos + xpos + tmpblockID + height + width + );
+				//Debugger.log("" + ypos + xpos + tmpblockID + height + width + );
 				if(moveDown) {
-					listOffset++;
 					//height used for C, to switch top layer of C-blocks with empty blocks 2 rows down
 					map[ypos][xpos] = map[ypos+height][xpos]; //replace block 1 with empty 1
 					map[ypos+height][xpos] = tmpblockID; //replace empty 1 with block 1
@@ -132,11 +136,12 @@ public class main {
 						map[ypos][xpos+1] = map[ypos+height][xpos+1]; //replace block 2 with empty 2
 						map[ypos+height][xpos+1] = tmpblockID; //replace empty 2 with block 2
 					}
-					printIntMap(map,blockArray);
+					if(Debugger.enabled)
+						printIntMap(map,blockArray);
 					newconfig = translateMap(map, blockArray);
 					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(3);
 					
-					System.out.println("configID: " + configID);
+					Debugger.log("configID: " + configID);
 					
 					if(!table.contains(newconfig)) {
 						table.put(newconfig, newconfig);
@@ -144,7 +149,7 @@ public class main {
 						tmplist.add(configID);
 						helperQueue.add(tmplist);
 					} else {
-						System.out.println("CONFIG ALREADY EXISTS\n");
+						Debugger.log("CONFIG ALREADY EXISTS\n");
 					}
 
 					if(checkWin(blockArray, map))
@@ -159,18 +164,18 @@ public class main {
 					
 					
 				} if(moveUp) {
-					listOffset++;
 					map[ypos+height-1][xpos] = map[ypos-1][xpos]; //replace bottommost left square with empty 1
 					map[ypos-1][xpos] = tmpblockID; //replace empty 1 with block 1
 					if(width == 2) { //for A & C blocks
 						map[ypos+height-1][xpos+1] = map[ypos-1][xpos+1]; //replace bottommost right square with empty 2
 						map[ypos-1][xpos+1] = tmpblockID; //replace empty 2 with block 2
 					}
-					printIntMap(map,blockArray);
+					if(Debugger.enabled)
+						printIntMap(map,blockArray);
 					newconfig = translateMap(map, blockArray);
 					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(4);
 					
-					System.out.println("configID: " + configID);
+					Debugger.log("configID: " + configID);
 					
 					if(!table.contains(newconfig)) {
 						table.put(newconfig, newconfig);
@@ -178,7 +183,7 @@ public class main {
 						tmplist.add(configID);
 						helperQueue.add(tmplist);
 					} else {
-						System.out.println("CONFIG ALREADY EXISTS\n");
+						Debugger.log("CONFIG ALREADY EXISTS\n");
 					}
 					
 					if(checkWin(blockArray, map))
@@ -189,18 +194,18 @@ public class main {
 					
 					
 				} if(moveLeft) {
-					listOffset++;
 					map[ypos][xpos+width-1] = map[ypos][xpos-1]; //index square replaced with empty 1
 					map[ypos][xpos-1] = tmpblockID;
 					if(height == 2) {
 						map[ypos+1][xpos+width-1] = map[ypos+1][xpos-1];
 						map[ypos+1][xpos-1] = tmpblockID;
 					}
-					printIntMap(map,blockArray);
+					if(Debugger.enabled)
+						printIntMap(map,blockArray);
 					newconfig = translateMap(map, blockArray);
 					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(5);
 					
-					System.out.println("configID: " + configID);
+					Debugger.log("configID: " + configID);
 					
 					if(!table.contains(newconfig)) {
 						table.put(newconfig, newconfig);
@@ -208,7 +213,7 @@ public class main {
 						tmplist.add(configID);
 						helperQueue.add(tmplist);
 					} else {
-						System.out.println("CONFIG ALREADY EXISTS\n");
+						Debugger.log("CONFIG ALREADY EXISTS\n");
 					}
 					if(checkWin(blockArray, map))
 						break mainLoop;
@@ -218,18 +223,18 @@ public class main {
 					
 					
 				} if(moveRight) {
-					listOffset++;
 					map[ypos][xpos] = map[ypos][xpos+width]; //index square replaced with empty 1
 					map[ypos][xpos+width] = tmpblockID;
 					if(height == 2) {
 						map[ypos+1][xpos] = map[ypos+1][xpos+width];
 						map[ypos+1][xpos+width] = tmpblockID;
 					}
-					printIntMap(map,blockArray);
+					if(Debugger.enabled)
+						printIntMap(map,blockArray);
 					newconfig = translateMap(map, blockArray);
 					configID = newconfig + moveID[i].charAt(0) + moveID[i].charAt(1) + moveID[i].charAt(2) + moveID[i].charAt(6);
 					
-					System.out.println("configID: " + configID);
+					Debugger.log("configID: " + configID);
 					
 					if(!table.contains(newconfig)) {
 						table.put(newconfig, newconfig);
@@ -237,7 +242,7 @@ public class main {
 						tmplist.add(configID);
 						helperQueue.add(tmplist);
 					} else {
-						System.out.println("CONFIG ALREADY EXISTS\n");
+						Debugger.log("CONFIG ALREADY EXISTS\n");
 					}
 
 					if(checkWin(blockArray, map))
@@ -254,7 +259,7 @@ public class main {
 				newconfig = translateMap(map, blockArray);
 				configID = newconfig + moveID[i];
 				
-				System.out.println("configID: " + configID);
+				Debugger.log("configID: " + configID);
 				
 				if(!table.contains(newconfig)) {
 					table.put(newconfig, newconfig);
@@ -262,7 +267,7 @@ public class main {
 					tmplist.add(configID);
 					helperQueue.add(tmplist);
 				} else {
-					System.out.println("CONFIG ALREADY EXISTS\n");
+					Debugger.log("CONFIG ALREADY EXISTS\n");
 				}
 				*/
 				
@@ -272,20 +277,22 @@ public class main {
 				    map[k] = helperMap[k].clone();
 			}
 		}
-		//System.out.println("Root node: " + helperQueue.remove().peekLast());
+		//Debugger.log("Root node: " + helperQueue.remove().peekLast());
 
-		printQueue(helperQueue);
-		System.out.println("\n----------------------\n\n\n");
-		helperQueue.remove();
+		if(Debugger.enabled)
+			printQueue(helperQueue);
+		Debugger.log("\n----------------------\n\n\n");
+		System.out.println("size: " + helperQueue.remove().size());
 		
 		}
 		
 		//-------END OF GIANT WHILE LOOP-----------//
-		
-		printQueue(helperQueue);
-		System.out.println("\n----------------------\n\n\n");
+		if(Debugger.enabled)
+			printQueue(helperQueue);
+		Debugger.log("\n----------------------\n\n\n");
 		while(helperQueue.peek() != null)
 			winningList = helperQueue.remove();
+		
 		printList(winningList);
 		
 		
