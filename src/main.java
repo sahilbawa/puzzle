@@ -14,7 +14,16 @@ public class main {
 		 * DAADEAEBACDD : 2 winning moves
 		 * 
 		 */
-		String config = "AADCBDEDEAAD";
+		String config;
+		System.out.println("Enter Configuation: ");
+		Scanner in = new Scanner(System.in);
+		config = in.nextLine();
+		while (config.length() != 12) {
+			System.err.println("Error: Not Valid Configuration.");
+			System.out.println("Enter Configuation: ");
+			config = in.nextLine();
+		}
+		//String config = "AADCBDEDEAAD";
 		LinkedList<String> winningList = null;
 		
 		Hashtable<String, String> table = new Hashtable<String, String>();
