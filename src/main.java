@@ -4,19 +4,13 @@ import java.util.*;
 public class main {
 
 	public static void main(String[] args) {
+		String config = "AADEECBDDAAD";
+		
 		Hashtable<String, String> table = new Hashtable<String, String>(5000);
 		
 		//create queue of linkedlist of type string
 		Queue<LinkedList<String>> helperQueue = new LinkedList<LinkedList<String>>();
-		
-		int[][] map = new int[4][5];
-		Block[] blockArray = new Block[12];
-		int xIndex = 0;
-		int yIndex = 0;
-		String config = "AADEECBDDAAD";
-		String[] moveID = new String[12];
-		
-		
+
 		//the first linked list to be added to the queue
 		LinkedList<String> alpha = new LinkedList<String>();
 		
@@ -24,6 +18,19 @@ public class main {
 		alpha.add(config);
 		helperQueue.add(alpha);
 		table.put(config, config);
+		
+		for(int LOOPER = 0; LOOPER < 2; LOOPER++) {
+
+		int[][] map = new int[4][5];
+		Block[] blockArray = new Block[12];
+		int xIndex = 0;
+		int yIndex = 0;
+		String[] moveID = new String[12];
+		
+		
+		config = helperQueue.peek().peekLast();
+		
+		
 		
 		
 		//-----------ITERATION OF SEQUENCE-----------
@@ -59,20 +66,20 @@ public class main {
 		
 		
 		
+		System.out.println("Starting configuration:");
 		printMap(map, blockArray);
 		
 
 		for(int j = 0; j < 12; j++) {
 			moveID[j] = blockArray[j].getMovements(blockArray, map);
 		}
-		System.out.println("moveID Array: " + Arrays.toString(moveID));
+		System.out.println("\nArray of Moves: " + Arrays.toString(moveID));
 		
 		
 		
 		
 		//Iterate through each element of moveID and store appropriate data in linkedlist & hashtable
 		for(int i = 0; i < 12; i++) {
-			char type;
 			int xpos;
 			int ypos;
 			char direction;
@@ -87,7 +94,6 @@ public class main {
 			    helperMap[k] = map[k].clone();
 			
 			if(moveID[i] != null) {
-				type = moveID[i].charAt(0);
 				ypos = (int)moveID[i].charAt(1) - 48;
 				xpos = (int)moveID[i].charAt(2) - 48;
 				direction = moveID[i].charAt(3);
@@ -135,7 +141,7 @@ public class main {
 				if(!table.contains(newconfig)) {
 					table.put(newconfig, newconfig);
 					LinkedList<String> tmplist = (LinkedList<String>) (helperQueue.peek().clone());
-					tmplist.add(newconfig);
+					tmplist.add(configID);
 					helperQueue.add(tmplist);
 				} else {
 					System.out.println("CONFIG ALREADY EXISTS\n");
@@ -149,11 +155,12 @@ public class main {
 			}
 		}
 		//System.out.println("Root node: " + helperQueue.remove().peekLast());
-		
+
 		printQueue(helperQueue);
 		
 		helperQueue.remove();
 		
+		}
 		
 		/*
 		//--TO TEST OUT FUNCTION--//
@@ -172,14 +179,14 @@ public class main {
 		//--END TESTING--//
 		*/
 		
-		System.out.println("final sequence: " + translateMap(map, blockArray));
 	}
 	
 	
-	
-	public static void printQueue(Queue<LinkedList<String>> q) {
+	public static void printQueue(Queue<LinkedList<String>> queue) {
+		Queue<LinkedList<String>> q = new LinkedList<LinkedList<String>>(queue);
 		LinkedList<String> tmplist;
 		int size = q.size();
+		System.out.println("Queue: ");
 		for(int i = 0; i < size; i++) {
 			tmplist = q.remove();
 			for(int j = 0; j < tmplist.size(); j++) {
