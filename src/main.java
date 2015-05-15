@@ -4,7 +4,15 @@ import java.util.*;
 public class main {
 
 	public static void main(String[] args) {
-		String config = "AADCBDEDEAAD";//"DAADEAEBACDD";//"AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
+		/*
+		 * AADCBDEDEAAD : 116 winning moves
+		 * EACADEABDADD : 9 winning moves
+		 * DAABEDAACDED : 7 winning moves
+		 * DDEADDCDCDEA : 5 winning moves
+		 * DAADEAEBACDD : 2 winning moves
+		 * 
+		 */
+		String config = "DDEADDCDCDEA";//"DAADEAEBACDD";//"AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
 		LinkedList<String> winningList = null;
 		
 		Hashtable<String, String> table = new Hashtable<String, String>(500000);
