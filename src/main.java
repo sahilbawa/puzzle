@@ -4,7 +4,8 @@ import java.util.*;
 public class main {
 
 	public static void main(String[] args) {
-		String config = "AADEECBDDAAD";
+		String config = "AADCBDEDEAAD";//"EACADEABDADD";//"DAABEDAACDED";//"DDEADDCDCDEA";
+		LinkedList<String> winningList;
 		
 		Hashtable<String, String> table = new Hashtable<String, String>(5000);
 		
@@ -19,8 +20,10 @@ public class main {
 		helperQueue.add(alpha);
 		table.put(config, config);
 		
-		for(int LOOPER = 0; LOOPER < 2; LOOPER++) {
-
+		//for(int LOOPER = 0; LOOPER < 4; LOOPER++) {
+		mainLoop:
+		while(true) {
+		
 		int[][] map = new int[4][5];
 		Block[] blockArray = new Block[12];
 		int xIndex = 0;
@@ -32,8 +35,7 @@ public class main {
 		
 		
 		
-		
-		//-----------ITERATION OF SEQUENCE-----------
+		//-----------ITERATION OF SEQUENCE INTO BLOCKARRAY-----------
 		for(int i = 0; i < 12; i++) {
 			//create block object for each character in sequence
 			blockArray[i] = new Block(config.charAt(i), i+1);
@@ -64,10 +66,15 @@ public class main {
 		
 		//-----------END of ITERATION OF SEQUENCE-----------
 		
-		
+		if(blockArray[map[1][3]].type == 'C' && blockArray[map[1][4]].type == 'C' && blockArray[map[2][3]].type == 'C' && blockArray[map[2][4]].type == 'C') {
+			winningList = helperQueue.remove();
+			System.out.println("**************************\nYAY YOU MOTHERFUCKERS!\nWE DID IT!\nSTARTED FROM THE BOTTOM\nNOW WE'RE HERE!\n**************************\n");
+			break mainLoop;
+		}
+			
 		
 		System.out.println("Starting configuration:");
-		printMap(map, blockArray);
+		printIntMap(map, blockArray);
 		
 
 		for(int j = 0; j < 12; j++) {
@@ -132,11 +139,11 @@ public class main {
 					}
 				}
 				
-				printMap(map,blockArray);
+				printIntMap(map,blockArray);
 				newconfig = translateMap(map, blockArray);
 				configID = newconfig + moveID[i];
 				
-				System.out.println("configID: " + configID + '\n');
+				System.out.println("configID: " + configID);
 				
 				if(!table.contains(newconfig)) {
 					table.put(newconfig, newconfig);
@@ -157,10 +164,25 @@ public class main {
 		//System.out.println("Root node: " + helperQueue.remove().peekLast());
 
 		printQueue(helperQueue);
-		
+		System.out.println("\n----------------------\n\n\n");
 		helperQueue.remove();
 		
 		}
+		//-------END OF GIANT WHILE LOOP-----------//
+		
+		
+		printList(winningList);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		/*
 		//--TO TEST OUT FUNCTION--//
@@ -173,7 +195,7 @@ public class main {
 		map[1][0] = tmpblock1;
 		map[1][1] = tmpblock2;
 		System.out.println();
-		printMap(map, blockArray);
+		printIntMap(map, blockArray);
 		System.out.println();
 		
 		//--END TESTING--//
@@ -181,6 +203,96 @@ public class main {
 		
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	public static void printList(LinkedList<String> list) {
+		char[][] map = new char[4][5];
+		char[] configID = new char[16];
+		String move = "";
+		
+		String tmpConfig = list.pollFirst();
+		createMap(map, tmpConfig);
+		printCharMap(map);
+		
+		while((tmpConfig = list.pollFirst()) != null) {
+			configID = tmpConfig.toCharArray();
+			if(configID[15] == 'd')
+				move = "down";
+			if(configID[15] == 'u')
+				move = "up";
+			if(configID[15] == 'l')
+				move = "left";
+			if(configID[15] == 'r')
+				move = "right";
+			System.out.println("\nMove " + configID[12] + " block at position (" + configID[14] + ", " + configID[13] + ") " + move + ".\n");
+			createMap(map, tmpConfig);
+			printCharMap(map);
+			
+			
+		}
+	}
+	
+	public static void createMap(char[][] map, String c) {
+		int xIndex = 0;
+		int yIndex = 0;
+		char type;
+		int width = 0;
+		int height = 0;
+		char[] config = c.toCharArray();
+		
+		for(int y = 0; y < 4; y++) {
+			for(int x = 0; x < 5; x++) {
+				map[y][x] = 0;
+			}
+		}
+		
+		for(int i = 0; i < 12; i++) {
+			type = config[i];
+			if(type == 'A') {
+				width = 2;
+				height = 1;
+			}
+			else if(type == 'B') {
+				width = 1;
+				height = 2;
+			}
+			else if(type == 'C') {
+				width = 2;
+				height = 2;
+			}
+			else if(type == 'D') {
+				width = 1;
+				height = 1;
+			}
+			else if(type == 'E') {
+				width = 1;
+				height = 1;
+			}
+			
+			while(map[yIndex][xIndex] != 0) {
+				xIndex++;
+				if(xIndex == 5) {
+					xIndex = 0;
+					yIndex++;
+				}
+			}
+			for(int y = 0; y < height; y++) {
+				for(int x = 0; x < width; x++) {
+					map[yIndex + y][xIndex + x] = type;
+				}
+			}
+			xIndex = xIndex + width;
+			if(xIndex == 5) {
+				xIndex = 0;
+				yIndex++;
+			}
+		}
+	}
 	
 	public static void printQueue(Queue<LinkedList<String>> queue) {
 		Queue<LinkedList<String>> q = new LinkedList<LinkedList<String>>(queue);
@@ -196,27 +308,19 @@ public class main {
 		}
 	}
 	
-	
-	public static void createMap(int[][] map, Block[] blockArray) {
-		int xIndex = 0;
-		int yIndex = 0;
-		for(int i = 0; i < 12; i++) {
-			blockArray[i].xposition = xIndex;
-			blockArray[i].yposition = yIndex;
-			
-			for(int x = 0; x < blockArray[i].width; x++) {
-				for(int y = 0; y < blockArray[i].height; y++) {
-					map[yIndex + y][xIndex + x] = blockArray[i].id;
-				}
-			}
-			if(xIndex == 5) {
-				xIndex = 0;
-				yIndex++;
-			}
+	public static void printCharMap(char[][] map) {
+		for(int w = 0; w<4; w++)
+		{
+		    for(int j = 0; j<5; j++)
+		    {
+		        System.out.print(map[w][j]);
+		    }
+		    System.out.println();
 		}
 	}
+	
 
-	public static void printMap(int[][] map, Block[] blockArray) {
+	public static void printIntMap(int[][] map, Block[] blockArray) {
 		for(int w = 0; w<4; w++)
 		{
 		    for(int j = 0; j<5; j++)
